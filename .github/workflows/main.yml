@@ -158,8 +158,8 @@ jobs:
           name: python-dependencies
           path: ~/.cache/pip
 
-      - name: Download Model Package
-        uses: actions/download-artifact@v4
+      - name: Restore Model Package
+        uses: actions/upload-artifact@v4
         with:
           name: model-package
           path: bike_sharing_api/
