@@ -109,3 +109,32 @@ jobs:
         with:
           name: unit-test-report
           path: reports/unit-test-results.xml
+
+  build_python_package:
+    name: Build Python Package
+    needs: unit_tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Restore Dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dependencies
+          path: ~/.cache/pip
+
+      - name: Install Dependencies
+        run: pip install -r requirements/requirements.txt
+
+      - name: Build Package (.whl)
+        run: |
+          python setup.py sdist bdist_wheel
+          mv dist/*.whl bike_sharing_api/bikeshare_model-0.0.1-py3-none-any.whl
+
+      - name: Upload Model Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-package
+          path: bike_sharing_api/bikeshare_model-0.0.1-py3-none-any.whl
