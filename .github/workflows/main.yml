@@ -1,19 +1,16 @@
-# demo.yaml
-# This workflow will install Python dependencies, run tests with a variety of Python versions
-name: Python app
+name: Push a Docker Image
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.8", "3.9", "3.10"]
-    steps:
+  name: Setup & Install Dependencies
+  runs-on: ubuntu-latest
+  steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
@@ -40,15 +37,4 @@ jobs:
         cp dist/*.whl ./bike_sharing_api/
     - name: test with pytest
       run: |
-        make test 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
-    - name: Build docker container 
-      run: |
-         cd ./bike_sharing_api
-         docker build -t ${{ secrets.DOCKER_USERNAME }}/bikeshare_model_api:latest .
-         docker push ${{ secrets.DOCKER_USERNAME }}/bikeshare_model_api:latest
+        make test
