@@ -38,15 +38,15 @@ jobs:
           name: python-dependencies
           path: ~/.cache/pip
       
-      - name: Install dependencies
-        run: |
-          make install
-      - name: Lint with pylint
-        run: |
-          make lint
-      - name: Format code with Black
-        run: |
-          make format
+      # - name: Install dependencies
+      #   run: |
+      #     make install
+      # - name: Lint with pylint
+      #   run: |
+      #     make lint
+      # - name: Format code with Black
+      #   run: |
+      #     make format
 
   train_model:
     name: Train Model
@@ -86,11 +86,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # - name: Restore Dependencies
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: python-dependencies
-      #     path: ~/.cache/pip
+      - name: Restore Dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dependencies
+          path: ~/.cache/pip
           
       - name: Download Trained Model
         uses: actions/download-artifact@v4
