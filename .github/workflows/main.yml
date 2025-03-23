@@ -1,44 +1,68 @@
-name: Push a Docker Image
+name: Model Training & Deployment Pipeline
+
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main 
+  workflow_dispatch:  
 
 jobs:
-  build:
+
+  setup:
+    name: Setup & Install Dependencies
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          python-version: "3.10"
+
+      # - name: Cache Dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.cache/pip
+      #     key: ${{ runner.os }}-pip-${{ hashFiles('requirements/requirements.txt') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-pip-
+
+      - name: Install Dependencies
+        run: pip install -r requirements/requirements.txt
+
+      - name: Upload Dependencies
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dependencies
+          path: ~/.cache/pip
+
+  train_model:
+    name: Train Model
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Restore Dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dependencies
+          path: ~/.cache/pip
+
+      - name: Install Dependencies (Ensure Installation)
+        run: pip install -r requirements/requirements.txt
+
+      - name: Train Model
         run: |
-          make install
-      - name: Lint with pylint
-        run: |
-          make lint
-      - name: Format code with Black
-        run: |
-          make format
-      - name: Train pipeline
-        run: |
-          python3 ./bikeshare_model/train_pipeline.py
-      - name: Predit pipeline
-        run: |
-          python3 ./bikeshare_model/predict.py 
-      - name: Build whl file
-        run: |
-          python3 -m build
-          cp dist/*.whl ./bike_sharing_api/
-      - name: test with pytest
-        run: |
-          make test
+          python bikeshare_model/train_pipeline.py
+          python bikeshare_model/predict.py
+
+      - name: Save Trained Model
+        uses: actions/upload-artifact@v4
+        with:
+          name: trained-model
+          path: bikeshare_model/trained_models/
