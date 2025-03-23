@@ -66,3 +66,36 @@ jobs:
         with:
           name: trained-model
           path: bikeshare_model/trained_models/
+
+  unit_tests:
+    name: Run Unit Tests
+    needs: train_model
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Restore Dependencies
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dependencies
+          path: ~/.cache/pip
+          
+      - name: Download Trained Model
+        uses: actions/download-artifact@v4
+        with:
+          name: trained-model
+          path: bikeshare_model/trained_models/
+
+      - name: Install Dependencies
+        run: pip install -r requirements/test_requirements.txt
+
+      - name: Run Unit Tests
+        run: pytest tests/ --junitxml=reports/unit-test-results.xml
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: reports/unit-test-results.xml
