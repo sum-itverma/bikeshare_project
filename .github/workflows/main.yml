@@ -93,7 +93,7 @@ jobs:
       #run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USER}" --password-stdin
 
     - name: Build the Docker image for Fastapi app
-      run: docker build -t $DOCKER_USER/bike_sharing_api:latest -f bike_sharing_api/Dockerfile
+      run: docker build -f bike_sharing_api/Dockerfile -t $DOCKER_USER/bike_sharing_api:latest bike_sharing_api/
 
     - name: Push the Docker Image
       run: docker push $DOCKER_USER/bike_sharing_api
