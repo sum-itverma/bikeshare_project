@@ -7,3 +7,6 @@ bikeshare_model/config/__pycache__/
 bikeshare_model/processing/__pycache__/
 bikeshare_model/trained_models/bikeshare__model_output_v0.0.1.pkl
 tests/__pycache__/
+bike_sharing_api/app/__pycache__/
+bike_sharing_api/app/schemas/__pycache__/
+bike_sharing_api/dist/
