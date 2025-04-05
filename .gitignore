@@ -1,0 +1,9 @@
+venv/*
+trained_models/*
+dist/*
+bikeshare_model.egg-info/
+bikeshare_model/__pycache__/
+bikeshare_model/config/__pycache__/
+bikeshare_model/processing/__pycache__/
+bikeshare_model/trained_models/bikeshare__model_output_v0.0.1.pkl
+tests/__pycache__/
