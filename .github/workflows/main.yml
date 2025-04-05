@@ -74,6 +74,11 @@ jobs:
   push-image:
     needs: [train, test, build]
     runs-on: ubuntu-latest
+    
+    env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
     steps:
     - name: Repo Checkout
       uses: actions/checkout@v2
@@ -83,21 +88,14 @@ jobs:
         name: my-build-package
         path: bike_sharing_api
 
-    - name: Login to Docker hub
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASS_TOKEN }}
+    - name: Login to Docker hub  
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
       #run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USER}" --password-stdin
 
     - name: Build the Docker image for Fastapi app
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
       run: docker build . -f Dockerfile -t $DOCKER_USER/bike_sharing_api:latest
 
     - name: Push the Docker Image
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
       run: docker push $DOCKER_USER/bike_sharing_api
 
     - name: Logout to Docker hub
