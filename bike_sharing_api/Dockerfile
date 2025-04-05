@@ -7,6 +7,11 @@ ADD . .
 # update pip
 RUN pip install --upgrade pip
 # install dependencies
+
+RUN ls
+
+RUN pwd
+
 RUN pip install -r requirements.txt
 # expose port for application
 EXPOSE 8001
