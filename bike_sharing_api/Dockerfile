@@ -1,7 +1,7 @@
 # pull python base image
 FROM python:3.10
 # specify working directory
-WORKDIR /bike_sharing_api
+WORKDIR /bikeshare_project/bike_sharing_api
 # copy application files
 ADD . . 
 # update pip
